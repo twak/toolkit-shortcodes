@@ -1,0 +1,35 @@
+.btn-purple {
+	background-color: #6b3f88;
+	color: #fff !important;
+}
+.btn-purple:hover {
+	background-color: #794799;
+	color: #fff !important;
+}
+.tk-gallery button {
+    padding:0;
+    margin:0;
+    border:0;
+    background:transparent;
+}
+a.downloadlink {
+    line-height:40px;
+    padding-left:60px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+}
+a.downloadlink.type-pdf {
+    background-image:url(../img/pdf-icon.png);
+}
+a.downloadlink.type-word {
+    background-image:url(../img/word-icon.png);
+}
+a.downloadlink.type-powerpoint {
+    background-image:url(../img/powerpoint-icon.png);
+}
+a.downloadlink.type-excel {
+    background-image:url(../img/excel-icon.png);
+}
+a.downloadlink.type-zip {
+    background-image:url(../img/zip-icon.png);
+}
