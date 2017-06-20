@@ -1,11 +1,12 @@
 <?php
 /**
  * Plugin Name: Toolkit Shortcodes
- * Plugin URI: http://toolkit.leeds.ac.uk/wordpress
+ * Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
+ * Bitbucket Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Description: Shortcodes for components in the UoL WordPress Toolkit theme.
  * Version: 1.0.1
  * Author: Web Team
- * Author URI: http://toolkit.leeds.ac.uk/wordpress
+ * Author URI: https://bitbucket.org/university-of-leeds/
  * License: GPL2
  */
 
