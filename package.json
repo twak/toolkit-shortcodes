@@ -1,0 +1,23 @@
+{
+  "name": "toolkit-shortcodes",
+  "version": "1.0.2",
+  "description": "Shortcodes for components in the UoL WordPress Toolkit theme",
+  "main": "init.php",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/university-of-leeds/toolkit-shortcodes.git"
+  },
+  "author": "Web Team",
+  "license": "GPL-2.0",
+  "homepage": "https://bitbucket.org/university-of-leeds/toolkit-shortcodes#readme",
+  "devDependencies": {
+    "bower": "^1.8.0",
+    "gulp": "^3.9.1",
+    "gulp-bower": "0.0.13",
+    "gulp-clean-css": "^3.7.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^3.0.0"
+  }
+}

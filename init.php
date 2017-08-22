@@ -210,42 +210,48 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             if ( ! $cols ) {
                 $cols = 3;
             }
+            $item_class = '';
+            $container_class = '';
             if ( $cols >= 6 ) {
-                $class = "col-md-2 col-sm-4 col-xs-6";
+                $container_class = " clear-md-2 clear-sm-4 clear-xs-6";
+                $item_class = "col-md-2 col-sm-4 col-xs-6";
             } elseif ( $cols >= 4 ) {
-                $class = "col-md-3 col-xs-6";
+                $container_class = " clear-md-3 clear-sm-4 clear-xs-6";
+                $item_class = "col-md-3 col-sm-4 col-xs-6";
             } elseif ( 3 === $cols ) {
-                $class = "col-md-4 col-xs-6";
+                $container_class = " clear-md-4 clear-sm-4 clear-xs-6";
+                $item_class = "col-md-4 col-sm-4 col-xs-6";
             } elseif ( 2 === $cols ) {
-                $class = "col-xs-6";
+                $container_class = " clear-xs-6";
+                $item_class = "col-xs-6";
             } elseif ( 1 === $cols ) {
-                $class = "col-xs-12";
+                $item_class = "col-xs-12";
             }
 
+            // enqueue scripts and styles
+            wp_enqueue_script(
+                'toolkit-gallery-js',
+                plugins_url( 'js/toolkit-gallery.js', __FILE__ ),
+                array( 'jquery' ),
+                self::$version,
+                true
+            );
+            wp_enqueue_style(
+                'toolkit-gallery-css',
+                plugins_url( 'css/toolkit-gallery.css', __FILE__ )
+            );
+
             // start output
-            $output = '<!-- Gallery --><div class="tk-gallery container-fluid"><div class="row">';
+            $output = sprintf('<!-- Gallery --><div class="tk-gallery container-fluid%s" data-featherlight-gallery data-featherlight-filter="a">', $container_class );
 
             // start column output
             $count = 0;
             foreach ($attachments as $id => $attachment) {
-                $image_src_url = wp_get_attachment_image_src($id, "thumbnail");//$gallery_atts["size"]);
+                $image_src_url = wp_get_attachment_image_src($id, $gallery_atts["size"]);
                 $image_link_url = wp_get_attachment_image_src($id, "large");
-                $image_caption = get_the_excerpt($id);
-                // this was to target clicks with the modal window
-                //$output .= sprintf( '<div class="%s"><button data-toggle="modal" data-target="#tk_lightbox%d" data-imgsrc="%s" data-alt="%s" data-caption="%s"><img src="%s" alt="%s"></button></div>', $class, $instance, esc_attr($image_link_url[0]), esc_attr($attachment->post_title), esc_attr($attachment->post_excerpt), $image_src_url[0], esc_attr($attachment->post_title) );
-                $output .= sprintf( '<div class="gallery-item %s"><a href="%s"><img src="%s" alt="%s"><p class="gallery-item-caption">%s</p></a></div>', $class, esc_attr($image_link_url[0]), $image_src_url[0], esc_attr($attachment->post_title), $image_caption ) ;
+                $image_caption = $attachment->post_excerpt;
+                $output .= sprintf( '<div class="gallery-item %s"><a href="%s" rel="gallery"><img src="%s" alt="%s"></a><p class="gallery-item-caption">%s</p></div>', $item_class, esc_attr($image_link_url[0]), $image_src_url[0], esc_attr($attachment->post_title), $image_caption ) ;
             }
-
-            $output .= '</div>';
-
-            // modal window
-            /*$output .= '<!-- Modal -->';
-            $output .= sprintf('<div id="tk_lightbox%d" class="tk-lightbox modal fade" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog"><div class="modal-content">', $instance );
-            //$output .= '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div>';
-            $output .= '<div class="modal-body"><img src="" alt="" /></div>';
-            $output .= '<div class="modal-footer"><p class="caption"></p><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>';
-            $output .= '</div></div></div><!-- #Modal -->';*/
-
             $output .= '</div><!-- #Gallery -->';
             return $output;
         }
@@ -266,43 +272,6 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
                 self::$version,
                 true
             );
-
-            // jquery.detch_syipe.js
-            wp_enqueue_script(
-                'jquery-detect-swipe-js',
-                plugins_url( 'js/vendor/jquery.detect_swipe.js', __FILE__ ),
-                array( 'jquery' ),
-                self::$version,
-                true
-            );
-
-            // Featherlight.js
-
-            wp_enqueue_script(
-                'featherlight-js',
-                plugins_url( 'js/vendor/featherlight.min.js', __FILE__ ),
-                array( 'jquery' ),
-                self::$version,
-                true
-            );
-            wp_enqueue_style(
-                'featherlight-css',
-                plugins_url( 'css/vendor/featherlight.min.css', __FILE__ )
-            );
-
-            wp_enqueue_script(
-                'featherlight-gallery-js',
-                plugins_url( 'js/vendor/featherlight.gallery.min.js', __FILE__ ),
-                array( 'jquery' ),
-                self::$version,
-                true
-            );
-
-            wp_enqueue_style(
-                'featherlight-gallery-css',
-                plugins_url( 'css/vendor/featherlight.gallery.min.css', __FILE__ )
-            );
-
         }
     }
     tk_shortcodes::register();
