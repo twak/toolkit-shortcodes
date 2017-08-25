@@ -1,0 +1,11 @@
+{
+  "name": "toolkit-shortcodes",
+  "version": "1.0.2",
+  "description": "Shortcodes for components in the UoL WordPress Toolkit theme",
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "featherlight": "noelboss/featherlight#^1.7.7",
+    "jquery-detect-swipe": "marcandre/detect_swipe#^2.1.4",
+    "include-media": "eduardoboucas/include-media#^1.4.9"
+  }
+}

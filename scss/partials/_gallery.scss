@@ -1,0 +1,51 @@
+.tk-gallery {
+    &.clear-xs-6 {
+        @include media("<=xs"){
+            .gallery-item:nth-child(2n+1) {
+                clear:both;
+            }
+        }
+    }
+    &.clear-sm-4 {
+        @include media(">xs", "<=sm"){
+            .gallery-item:nth-child(3n+1) {
+                clear:both;
+            }
+        }
+    }
+    &.clear-md-2 {
+        @include media(">sm"){
+            .gallery-item:nth-child(6n+1) {
+                clear:both;
+            }
+        }
+    }
+    &.clear-md-3 {
+        @include media(">sm"){
+            .gallery-item:nth-child(4n+1) {
+                clear:both;
+            }
+        }
+    }
+    &.clear-md-4 {
+        @include media(">sm"){
+            .gallery-item:nth-child(3n+1) {
+                clear:both;
+            }
+        }
+    }
+
+    button {
+        padding:0;
+        margin:0;
+        border:0;
+        background:transparent;
+    }
+    .gallery-item-caption {
+        font-size:$caption-font-size;
+        line-height:$caption-line-height;
+        color:$caption-text-colour;
+        margin:0;
+        padding-bottom:($caption-line-height/2);
+    }
+}

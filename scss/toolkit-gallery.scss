@@ -1,0 +1,17 @@
+/*
+ * featherlight CSS
+ */
+@import "vendor/featherlight.gallery.min";
+@import "vendor/featherlight.min";
+
+/* include-media */
+@import "util/include-media";
+/* media breakpoints */
+@import "vars/breakpoints";
+/* clearfix */
+@import "util/clearfix";
+
+/* gallery variables */
+@import "vars/gallery";
+/* gallery styles */
+@import "partials/gallery";
