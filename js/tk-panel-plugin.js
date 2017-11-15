@@ -9,7 +9,7 @@
 		};
 
 		function html( cls, data ,con) {
-			var placeholder = url + '/mce-img/' + getAttr(data,'type') + '.jpg';
+			var placeholder = url + '/mce-img/' + getAttr(data,'type') + '.png';
 			data = window.encodeURIComponent( data );
 			content = window.encodeURIComponent( con );
 
@@ -37,9 +37,9 @@
 		//add popup
 		editor.addCommand('tk_panel_popup', function(ui, v) {
 			//setup defaults
-			var header = '';
-			if (v.header)
-				header = v.header;
+			var title = '';
+			if (v.title)
+				title = v.title;
 			var footer = '';
 			if (v.footer)
 				footer = v.footer;
@@ -51,13 +51,13 @@
 				content = v.content;
 
 			editor.windowManager.open( {
-				title: 'Bootstrap Panel Shortcode',
+				title: 'Toolkit Panel Shortcode',
 				body: [
 					{
 						type: 'textbox',
-						name: 'header',
-						label: 'Panel Header',
-						value: header,
+						name: 'title',
+						label: 'Panel title',
+						value: title,
 						tooltip: 'Leave blank for none'
 					},
 					{
@@ -94,9 +94,9 @@
 				],
 				onsubmit: function( e ) {
 					var shortcode_str = '[' + sh_tag + ' type="'+e.data.type+'"';
-					//check for header
-					if (typeof e.data.header != 'undefined' && e.data.header.length)
-						shortcode_str += ' header="' + e.data.header + '"';
+					//check for title
+					if (typeof e.data.title != 'undefined' && e.data.title.length)
+						shortcode_str += ' title="' + e.data.title + '"';
 					//check for footer
 					if (typeof e.data.footer != 'undefined' && e.data.footer.length)
 						shortcode_str += ' footer="' + e.data.footer + '"';
@@ -112,10 +112,10 @@
 		//add button
 		editor.addButton('tk_panel', {
 			icon: 'tk_panel',
-			tooltip: 'BootStrap Panel',
+			tooltip: 'Add Panel',
 			onclick: function() {
 				editor.execCommand('tk_panel_popup','',{
-					header : '',
+					title : '',
 					footer : '',
 					type   : 'default',
 					content: ''
@@ -142,7 +142,7 @@
 				console.log(title);
 				var content = e.target.attributes['data-sh-content'].value;
 				editor.execCommand('tk_panel_popup','',{
-					header : getAttr(title,'header'),
+					title : getAttr(title,'title'),
 					footer : getAttr(title,'footer'),
 					type   : getAttr(title,'type'),
 					content: content

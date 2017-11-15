@@ -37,32 +37,8 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
 
             // enqueue scripts and styles
             add_action( 'wp_enqueue_scripts', array( $this, 'toolkit_shortcodes_script' ) );
-
             add_action( 'admin_head', array( $this, 'admin_head') );
-
             add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
-        }
-
-        /*
-         * PANEL SHORTCODE [panel title=""]Blah Blah[/panel]
-         */
-        public static function panel_shortcode( $atts, $content = null ) {
-
-            // Set default parameters
-            $panel_atts = shortcode_atts( array (
-                'title' => ''
-            ), $atts );
-
-            // If title is empty, don't use it in the panel
-            if( $panel_atts['title'] == '') {
-                $title = '';
-                // Otherwise, add the panel!
-            } else {
-                $title = '<div class="panel-heading"><h3 class="panel-title">' . wp_kses_post( $panel_atts['title'] ) . '</h3></div>';
-            }
-
-            // Return the panel markup
-            return '<div class="panel panel-default">' . $title . '<div class="panel-body">' . do_shortcode( $content ) . '</div></div>';
         }
 
         /*
@@ -283,7 +259,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
          * Used to enqueue custom scripts and styles for admin
          * @return void
          */
-        function admin_script()
+        public function admin_script()
         {
              wp_enqueue_style(
                 'tk_shortcodes_admin',
@@ -295,7 +271,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
          * admin_head
          * adds MCE filters if rich editing is enabled
          */
-        function admin_head() 
+        public function admin_head() 
         {
             // check user permissions
             if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
@@ -304,34 +280,43 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             
             // check if WYSIWYG is enabled
             if ( 'true' == get_user_option( 'rich_editing' ) ) {
-                add_filter( 'mce_external_plugins', array( $this ,'mce_external_plugins' ) );
-                add_filter( 'mce_buttons', array($this, 'mce_buttons' ) );
+                add_filter( 'mce_external_plugins', array( $this ,'mce_plugins' ), 100 );
+                add_filter( 'mce_buttons_2', array($this, 'mce_buttons' ), 100 );
             }
         }
 
         /**
-         * mce_external_plugins 
-         * Adds tinymce plugin
+         * mce_plugins 
+         * Adds tinymce plugins which are added by shortcodes using the 
+         * tk_shortcodes_mce_plugins filter.
          * @param  array $plugin_array 
          * @return array
          */
-        function mce_external_plugins( $plugin_array ) 
+        public function mce_plugins( $plugin_array ) 
         {
-            $plugin_array['tk_shortcodes'] = plugins_url( 'js/mce-button.js' , __FILE__ );
+            $tk_plugins = apply_filters('tk_shortcodes_mce_plugins', array() );
+            if ( count( $tk_plugins ) ) {
+                foreach ( $tk_plugins as $tk_plugin => $plugin_script ) {
+                    $plugin_array[$tk_plugin] = plugins_url( 'js/' . $plugin_script , __FILE__ );
+                }
+            }
             return $plugin_array;
         }
 
         /**
          * mce_buttons 
-         * Adds any tinymce buttons defined in shortcodes
+         * Adds any tinymce buttons defined in shortcodes - added by using the
+         * tk_shortcodes_mce_buttons filter
          * @param  array $buttons 
          * @return array
          */
-        function mce_buttons( $buttons ) 
+        public function mce_buttons( $buttons ) 
         {
             $tk_buttons = apply_filters('tk_shortcodes_mce_buttons', array() );
             if ( count( $tk_buttons ) ) {
-                array_merge( $buttons, $tk_buttons );
+                foreach ( $tk_buttons as $tk_button ) {
+                    array_push( $buttons, $tk_button );
+                }
             }
             return $buttons;
         }
