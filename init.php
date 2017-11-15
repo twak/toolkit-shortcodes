@@ -18,25 +18,29 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
         public static $version = "1.0.3";
 
         /* register all shortcodes with wordpress API */
-        public static function register()
+        public function __construct()
         {
             // panel shortcode
-            add_shortcode( 'panel', array( __CLASS__, 'panel_shortcode' ) );
+            include dirname(__FILE__) . '/lib/panel.php';
 
             // button shortcode
-            add_shortcode( 'button', array( __CLASS__, 'button_shortcode' ) );
+            add_shortcode( 'button', array( $this, 'button_shortcode' ) );
 
             // PDF download button
-            add_shortcode( 'downloadfile', array( __CLASS__, 'download_shortcode' ) );
+            add_shortcode( 'downloadfile', array( $this, 'download_shortcode' ) );
 
             // Remove built in gallery shortcode
             remove_shortcode('gallery', 'gallery_shortcode');
 
             // add gallery shortcode
-            add_shortcode( 'gallery', array( __CLASS__, 'gallery_shortcode' ) );
+            add_shortcode( 'gallery', array( $this, 'gallery_shortcode' ) );
 
             // enqueue scripts and styles
-            add_action( 'wp_enqueue_scripts', array( __CLASS__, 'toolkit_shortcodes_script' ) );
+            add_action( 'wp_enqueue_scripts', array( $this, 'toolkit_shortcodes_script' ) );
+
+            add_action( 'admin_head', array( $this, 'admin_head') );
+
+            add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
         }
 
         /*
@@ -257,7 +261,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
         }
 
         /*
-         * Enqueue the additional script
+         * Enqueue the additional scripts and styles used in the shortcode output
          */
         public static function toolkit_shortcodes_script()
         {
@@ -273,6 +277,65 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
                 true
             );
         }
+
+        /**
+         * admin_scripts 
+         * Used to enqueue custom scripts and styles for admin
+         * @return void
+         */
+        function admin_script()
+        {
+             wp_enqueue_style(
+                'tk_shortcodes_admin',
+                plugins_url( 'css/toolkit-shortcodes-admin.css' , __FILE__ )
+            );
+        }
+
+        /**
+         * admin_head
+         * adds MCE filters if rich editing is enabled
+         */
+        function admin_head() 
+        {
+            // check user permissions
+            if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+                return;
+            }
+            
+            // check if WYSIWYG is enabled
+            if ( 'true' == get_user_option( 'rich_editing' ) ) {
+                add_filter( 'mce_external_plugins', array( $this ,'mce_external_plugins' ) );
+                add_filter( 'mce_buttons', array($this, 'mce_buttons' ) );
+            }
+        }
+
+        /**
+         * mce_external_plugins 
+         * Adds tinymce plugin
+         * @param  array $plugin_array 
+         * @return array
+         */
+        function mce_external_plugins( $plugin_array ) 
+        {
+            $plugin_array['tk_shortcodes'] = plugins_url( 'js/mce-button.js' , __FILE__ );
+            return $plugin_array;
+        }
+
+        /**
+         * mce_buttons 
+         * Adds any tinymce buttons defined in shortcodes
+         * @param  array $buttons 
+         * @return array
+         */
+        function mce_buttons( $buttons ) 
+        {
+            $tk_buttons = apply_filters('tk_shortcodes_mce_buttons', array() );
+            if ( count( $tk_buttons ) ) {
+                array_merge( $buttons, $tk_buttons );
+            }
+            return $buttons;
+        }
+
     }
-    tk_shortcodes::register();
+    new tk_shortcodes();
 }
