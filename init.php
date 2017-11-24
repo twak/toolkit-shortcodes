@@ -26,8 +26,8 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             // button shortcode
             add_shortcode( 'button', array( $this, 'button_shortcode' ) );
 
-            // PDF download button
-            add_shortcode( 'downloadfile', array( $this, 'download_shortcode' ) );
+            // download file button
+            include dirname(__FILE__) . '/lib/downloadfile.php';
 
             // Remove built in gallery shortcode
             remove_shortcode('gallery', 'gallery_shortcode');
@@ -73,30 +73,6 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             return '<a href="' . wp_kses_post( $button_atts['link'] ) . '" class="btn btn-lg ' . $button_type . '">' . wp_kses_post( $button_atts['text'] ) . '</a>';
         }
 
-        /**
-         * DOWNLOAD SHORTCODE
-         * Places a link to a file in an island with an icon
-         */
-        public static function download_shortcode( $atts, $content = null )
-        {
-            // Set default parameters
-            $pdf_atts = shortcode_atts( array (
-                'url' => '',
-                'type' => ''
-            ), $atts );
-
-            // sanitise
-            if ( ! $content || trim($content) == "" ) {
-                $content = "Download";
-            }
-            $type = strtolower(trim($pdf_atts["type"]));
-            $types = array('word', 'powerpoint', 'zip', 'pdf', 'excel');
-            $url = filter_var( $pdf_atts["url"], FILTER_VALIDATE_URL );
-            if ( $url && in_array( $type, $types ) ) {
-                return sprintf('<h4><a class="island island-sm island-m-b skin-box-module downloadlink type-%s" href="%s">%s</a></h4>', $type, $url, $content );
-            }
-        }
-        
         /**
          * GALLERY SHORTCODE
          * replaces default output for wordpress galleries

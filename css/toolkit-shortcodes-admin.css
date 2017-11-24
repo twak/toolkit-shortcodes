@@ -1,1 +1,14 @@
-i.mce-i-tk_panel:before{font-family:dashicons;content:"\f116"}
+i.mce-i-tk_panel:before{
+    font-family:dashicons;
+    content:"\f134";
+    border:1px solid #555d66;
+    border-radius:2px;
+}
+i.mce-i-tk_downloadfile:before{
+    font-family:dashicons;
+    content:"\f316";
+}
+.mce-content-body img.downloadfile,
+.mce-content-body img.tk_panel {
+    cursor:pointer !important;
+}

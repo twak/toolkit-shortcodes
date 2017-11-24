@@ -9,11 +9,11 @@
 		};
 
 		function html( cls, data ,con) {
-			var placeholder = url + '/mce-img/' + getAttr(data,'type') + '.png';
+			var placeholder = url + '/mce-img/panel/' + getAttr(data,'type') + '.png';
 			data = window.encodeURIComponent( data );
 			content = window.encodeURIComponent( con );
 
-			return '<img src="' + placeholder + '" class="mceItem ' + cls + '" ' + 'data-sh-attr="' + data + '" data-sh-content="'+ con+'" data-mce-resize="false" data-mce-placeholder="1" />';
+			return '<img title="Click to edit" src="' + placeholder + '" class="mceItem ' + sh_tag + '" ' + 'data-sh-attr="' + data + '" data-sh-content="'+ con+'" data-mce-resize="false" data-mce-placeholder="1" />';
 		}
 
 		function replaceShortcodes( content ) {
@@ -134,9 +134,8 @@
 		});
 
 		//open popup on placeholder double click
-		editor.on('DblClick',function(e) {
-			var cls  = e.target.className.indexOf('wp-tk_panel');
-			if ( e.target.nodeName == 'IMG' && e.target.className.indexOf('wp-tk_panel') > -1 ) {
+		editor.on('click',function(e) {
+			if ( e.target.nodeName == 'IMG' && e.target.className.indexOf('tk_panel') > -1 ) {
 				var title = e.target.attributes['data-sh-attr'].value;
 				title = window.decodeURIComponent(title);
 				console.log(title);
