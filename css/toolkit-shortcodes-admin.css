@@ -8,7 +8,3 @@ i.mce-i-tk_downloadfile:before{
     font-family:dashicons;
     content:"\f316";
 }
-.mce-content-body img.downloadfile,
-.mce-content-body img.tk_panel {
-    cursor:pointer !important;
-}

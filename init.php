@@ -39,6 +39,8 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             add_action( 'wp_enqueue_scripts', array( $this, 'toolkit_shortcodes_script' ) );
             add_action( 'admin_head', array( $this, 'admin_head') );
             add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
+            add_filter( 'tiny_mce_before_init', array($this , 'editor_styles' ) );
+
         }
 
         /*
@@ -259,6 +261,21 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
                 add_filter( 'mce_external_plugins', array( $this ,'mce_plugins' ), 100 );
                 add_filter( 'mce_buttons_2', array($this, 'mce_buttons' ), 100 );
             }
+        }
+
+        /**
+         * editor styles
+         * loads additional style rules into tinymce editor
+         */
+        public function editor_styles( $mceInit )
+        {
+            $styles = ".mce-content-body img.mceItem.downloadfile, .mce-content-body img.mceItem.tk_panel { cursor:pointer; } ";
+            if ( isset( $mceInit['content_style'] ) ) {
+                $mceInit['content_style'] .= ' ' . $styles;
+            } else {
+                $mceInit['content_style'] = $styles;
+            }
+            return $mceInit;
         }
 
         /**
