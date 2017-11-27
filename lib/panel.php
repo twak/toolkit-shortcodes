@@ -13,6 +13,13 @@ class tk_panel_shortcode{
 	 */
 	public $shortcode_tag = 'tk_panel';
 
+    /**
+     * panel types
+     * these are defined in stylesheets and correspond to different colour schemes
+     * @var array
+     */
+    public $panel_types = array('primary','success','info','warning','danger','default');
+
 	/**
 	 * __construct 
 	 * class constructor will set the needed filter and action hooks
@@ -38,7 +45,7 @@ class tk_panel_shortcode{
 	public function shortcode_handler($atts , $content = null)
     {
 		// Attributes
-		extract( shortcode_atts(
+		$panel = shortcode_atts(
 			array(
 				'title' => 'no',
 				'footer' => 'no',
@@ -46,29 +53,18 @@ class tk_panel_shortcode{
 			), $atts )
 		);
 		
-		//make sure the panel type is a valid styled type if not revert to default
-		$panel_types = array('primary','success','info','warning','danger','default');
-		$type = in_array($type, $panel_types)? $type: 'default';
+        $panel = (object) $panel;
 
-        //start panel markup
-        $output = '<div class="panel panel-' . $type . '">';
+		// make sure the panel type is a valid styled type if not revert to default
+		$panel->type = in_array($type, $this->panel_types)? $panel->type: 'default';
 
-        //check if panel has a header
-        if ('no' != $title)
-            $output .= '<div class="panel-heading">' . $title . '</div>';
-
-        //add panel body content and allow shortcode in it
-        $output .= '<div class="panel-body">' . trim( do_shortcode( $content ) ) . '</div>';
-
-        //check if panel has a footer
-        if ('no' != $footer)
-            $output .= '<div class="panel-footer">' . $footer . '</div>';
-
-        //add closing div tag
-        $output .= '</div>';
+        // trim panel body content and process shortcodes
+        $panel->content = trim( do_shortcode( $content ) );
 
 		//return shortcode output
-		return $output;
+        ob_start();
+        include dirname(__FILE__) . '/views/panel.php';
+        return ob_get_clean();
 	}
 
     /**

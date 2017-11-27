@@ -29,6 +29,9 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             // download file button
             include dirname(__FILE__) . '/lib/downloadfile.php';
 
+            // include media templates
+            add_action( 'print_media_templates', array( $this, 'media_templates' ) );
+
             // Remove built in gallery shortcode
             remove_shortcode('gallery', 'gallery_shortcode');
 
@@ -312,6 +315,18 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
                 }
             }
             return $buttons;
+        }
+
+        /**
+         * media_templates
+         * Prints any media templates defined in shortcodes
+         */
+        public function media_templates( $templates )
+        {
+            foreach (glob(dirname(__FILE__) . "/templates/*.html") as $filename)
+            {
+                include_once $filename;
+            }
         }
 
     }

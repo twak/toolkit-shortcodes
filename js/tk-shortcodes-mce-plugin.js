@@ -1,6 +1,6 @@
 (function() {
-	tinymce.PluginManager.add('downloadfile', function( editor, url ) {
-		var sh_tag = 'downloadfile';
+	tinymce.PluginManager.add('tk-shortcodes', function( editor, url ) {
+		var sh_tags = ['tk_panel', 'downloadfile'];
 
 		//helper functions 
 		function getAttr(s, n) {
