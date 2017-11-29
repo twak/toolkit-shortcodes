@@ -29,7 +29,7 @@ gulp.task('copydeps', ['bower'], function() {
 
 // Compile Sass
 gulp.task('sass', function() {
-  return gulp.src(['scss/toolkit-shortcodes.scss', 'scss/toolkit-gallery.scss'])
+  return gulp.src(['scss/toolkit-shortcodes.scss', 'scss/toolkit-shortcodes-admin.scss', 'scss/toolkit-shortcodes-editor-style.scss', 'scss/toolkit-gallery.scss'])
     .pipe(sass({
       includePaths: ['./scss'],
       outputStyle: 'expanded'
