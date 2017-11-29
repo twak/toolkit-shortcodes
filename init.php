@@ -4,7 +4,7 @@
  * Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Bitbucket Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Description: Shortcodes for components in the UoL WordPress Toolkit theme.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Web Team
  * Author URI: https://bitbucket.org/university-of-leeds/
  * License: GPL2
@@ -15,50 +15,38 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
     class tk_shortcodes
     {
         /* plugin version */
-        public static $version = "1.0.3";
+        public static $version = "1.0.4";
 
         /* register all shortcodes with wordpress API */
-        public static function register()
+        public function __construct()
         {
             // panel shortcode
-            add_shortcode( 'panel', array( __CLASS__, 'panel_shortcode' ) );
+            include dirname(__FILE__) . '/lib/panel.php';
 
             // button shortcode
-            add_shortcode( 'button', array( __CLASS__, 'button_shortcode' ) );
+            add_shortcode( 'button', array( $this, 'button_shortcode' ) );
 
-            // PDF download button
-            add_shortcode( 'downloadfile', array( __CLASS__, 'download_shortcode' ) );
+            // download file button
+            include dirname(__FILE__) . '/lib/downloadfile.php';
+
+            // iframe
+            include dirname(__FILE__) . '/lib/iframe.php';
+
+            // include media templates
+            add_action( 'print_media_templates', array( $this, 'media_templates' ) );
 
             // Remove built in gallery shortcode
             remove_shortcode('gallery', 'gallery_shortcode');
 
             // add gallery shortcode
-            add_shortcode( 'gallery', array( __CLASS__, 'gallery_shortcode' ) );
+            add_shortcode( 'gallery', array( $this, 'gallery_shortcode' ) );
 
             // enqueue scripts and styles
-            add_action( 'wp_enqueue_scripts', array( __CLASS__, 'toolkit_shortcodes_script' ) );
-        }
+            add_action( 'wp_enqueue_scripts', array( $this, 'toolkit_shortcodes_script' ) );
+            add_action( 'admin_head', array( $this, 'admin_head') );
+            add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
+            add_filter( 'mce_css', array($this , 'editor_styles' ) );
 
-        /*
-         * PANEL SHORTCODE [panel title=""]Blah Blah[/panel]
-         */
-        public static function panel_shortcode( $atts, $content = null ) {
-
-            // Set default parameters
-            $panel_atts = shortcode_atts( array (
-                'title' => ''
-            ), $atts );
-
-            // If title is empty, don't use it in the panel
-            if( $panel_atts['title'] == '') {
-                $title = '';
-                // Otherwise, add the panel!
-            } else {
-                $title = '<div class="panel-heading"><h3 class="panel-title">' . wp_kses_post( $panel_atts['title'] ) . '</h3></div>';
-            }
-
-            // Return the panel markup
-            return '<div class="panel panel-default">' . $title . '<div class="panel-body">' . do_shortcode( $content ) . '</div></div>';
         }
 
         /*
@@ -93,30 +81,6 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             return '<a href="' . wp_kses_post( $button_atts['link'] ) . '" class="btn btn-lg ' . $button_type . '">' . wp_kses_post( $button_atts['text'] ) . '</a>';
         }
 
-        /**
-         * DOWNLOAD SHORTCODE
-         * Places a link to a file in an island with an icon
-         */
-        public static function download_shortcode( $atts, $content = null )
-        {
-            // Set default parameters
-            $pdf_atts = shortcode_atts( array (
-                'url' => '',
-                'type' => ''
-            ), $atts );
-
-            // sanitise
-            if ( ! $content || trim($content) == "" ) {
-                $content = "Download";
-            }
-            $type = strtolower(trim($pdf_atts["type"]));
-            $types = array('word', 'powerpoint', 'zip', 'pdf', 'excel');
-            $url = filter_var( $pdf_atts["url"], FILTER_VALIDATE_URL );
-            if ( $url && in_array( $type, $types ) ) {
-                return sprintf('<h4><a class="island island-sm island-m-b skin-box-module downloadlink type-%s" href="%s">%s</a></h4>', $type, $url, $content );
-            }
-        }
-        
         /**
          * GALLERY SHORTCODE
          * replaces default output for wordpress galleries
@@ -257,7 +221,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
         }
 
         /*
-         * Enqueue the additional script
+         * Enqueue the additional scripts and styles used in the shortcode output
          */
         public static function toolkit_shortcodes_script()
         {
@@ -273,6 +237,98 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
                 true
             );
         }
+
+        /**
+         * admin_scripts 
+         * Used to enqueue custom scripts and styles for admin
+         * @return void
+         */
+        public function admin_script()
+        {
+             wp_enqueue_style(
+                'tk_shortcodes_admin',
+                plugins_url( 'css/toolkit-shortcodes-admin.css' , __FILE__ )
+            );
+        }
+
+        /**
+         * admin_head
+         * adds MCE filters if rich editing is enabled
+         */
+        public function admin_head() 
+        {
+            // check user permissions
+            if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+                return;
+            }
+            
+            // check if WYSIWYG is enabled
+            if ( 'true' == get_user_option( 'rich_editing' ) ) {
+                add_filter( 'mce_external_plugins', array( $this ,'mce_plugins' ), 100 );
+                add_filter( 'mce_buttons_2', array($this, 'mce_buttons' ), 100 );
+            }
+        }
+
+        /**
+         * editor styles
+         * loads additional style rules into tinymce editor
+         */
+        public function editor_styles( $mce_css )
+        {
+            if ( ! empty( $mce_css ) ) {
+                $mce_css .= ',';
+            }
+            $mce_css .= plugins_url( 'css/toolkit-shortcodes-editor-style.css', __FILE__ );
+            return $mce_css;
+        }
+
+        /**
+         * mce_plugins 
+         * Adds tinymce plugins which are added by shortcodes using the 
+         * tk_shortcodes_mce_plugins filter.
+         * @param  array $plugin_array 
+         * @return array
+         */
+        public function mce_plugins( $plugin_array ) 
+        {
+            $tk_plugins = apply_filters('tk_shortcodes_mce_plugins', array() );
+            if ( count( $tk_plugins ) ) {
+                foreach ( $tk_plugins as $tk_plugin => $plugin_script ) {
+                    $plugin_array[$tk_plugin] = plugins_url( 'js/' . $plugin_script , __FILE__ );
+                }
+            }
+            return $plugin_array;
+        }
+
+        /**
+         * mce_buttons 
+         * Adds any tinymce buttons defined in shortcodes - added by using the
+         * tk_shortcodes_mce_buttons filter
+         * @param  array $buttons 
+         * @return array
+         */
+        public function mce_buttons( $buttons ) 
+        {
+            $tk_buttons = apply_filters('tk_shortcodes_mce_buttons', array() );
+            if ( count( $tk_buttons ) ) {
+                foreach ( $tk_buttons as $tk_button ) {
+                    array_push( $buttons, $tk_button );
+                }
+            }
+            return $buttons;
+        }
+
+        /**
+         * media_templates
+         * Prints any media templates defined in shortcodes
+         */
+        public function media_templates( $templates )
+        {
+            foreach (glob(dirname(__FILE__) . "/templates/*.html") as $filename)
+            {
+                include_once $filename;
+            }
+        }
     }
-    tk_shortcodes::register();
+    new tk_shortcodes();
 }
