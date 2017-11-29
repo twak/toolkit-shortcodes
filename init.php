@@ -4,7 +4,7 @@
  * Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Bitbucket Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Description: Shortcodes for components in the UoL WordPress Toolkit theme.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Web Team
  * Author URI: https://bitbucket.org/university-of-leeds/
  * License: GPL2
@@ -15,7 +15,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
     class tk_shortcodes
     {
         /* plugin version */
-        public static $version = "1.0.3";
+        public static $version = "1.0.4";
 
         /* register all shortcodes with wordpress API */
         public function __construct()
