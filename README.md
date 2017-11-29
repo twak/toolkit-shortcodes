@@ -4,11 +4,11 @@ Shortcodes Plugin
 The following shortcodes are provided by this plugin:
 
 ### panel
-Adds markup to show enclosed text in a bootstrap "panel". The shortcode encloses content and has a single possible attribute ("title").
+Adds markup to show enclosed text in a bootstrap "panel". The shortcode encloses content and has a two possible attributes ("title" and "footer").
 
 The following code:
 ```
-[panel title="Panel Title"]Panel Content[/panel]
+[panel title="Panel Title" footer="Panel Footer"]Panel Content[/panel]
 ```
 results in the following markup:
 ```html
@@ -17,6 +17,7 @@ results in the following markup:
         <h3 class="panel-title">Panel Title</h3>
     </div>
     <div class="panel-body">Panel Content</div>
+    <div class="panel-footer">Panel Footer</div>
 </div>
 ```
 

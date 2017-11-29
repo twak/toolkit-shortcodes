@@ -29,6 +29,9 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             // download file button
             include dirname(__FILE__) . '/lib/downloadfile.php';
 
+            // iframe
+            include dirname(__FILE__) . '/lib/iframe.php';
+
             // include media templates
             add_action( 'print_media_templates', array( $this, 'media_templates' ) );
 
@@ -42,7 +45,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             add_action( 'wp_enqueue_scripts', array( $this, 'toolkit_shortcodes_script' ) );
             add_action( 'admin_head', array( $this, 'admin_head') );
             add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
-            add_filter( 'tiny_mce_before_init', array($this , 'editor_styles' ) );
+            add_filter( 'mce_css', array($this , 'editor_styles' ) );
 
         }
 
@@ -270,15 +273,13 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
          * editor styles
          * loads additional style rules into tinymce editor
          */
-        public function editor_styles( $mceInit )
+        public function editor_styles( $mce_css )
         {
-            $styles = ".mce-content-body img.mceItem.downloadfile, .mce-content-body img.mceItem.tk_panel { cursor:pointer; } ";
-            if ( isset( $mceInit['content_style'] ) ) {
-                $mceInit['content_style'] .= ' ' . $styles;
-            } else {
-                $mceInit['content_style'] = $styles;
+            if ( ! empty( $mce_css ) ) {
+                $mce_css .= ',';
             }
-            return $mceInit;
+            $mce_css .= plugins_url( 'css/toolkit-shortcodes-editor-style.css', __FILE__ );
+            return $mce_css;
         }
 
         /**
@@ -328,7 +329,6 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
                 include_once $filename;
             }
         }
-
     }
     new tk_shortcodes();
 }

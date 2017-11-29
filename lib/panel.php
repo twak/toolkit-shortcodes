@@ -2,6 +2,7 @@
 /**
  * Panel shortcode
  * @see https://generatewp.com/take-shortcodes-ultimate-level/
+ * @see https://github.com/dtbaker/wordpress-mce-view-and-shortcode-editor
  */
 if ( ! class_exists( 'tk_panel_shortcode' ) ) :
 
@@ -47,23 +48,22 @@ class tk_panel_shortcode{
 		// Attributes
 		$panel = shortcode_atts(
 			array(
-				'title' => 'no',
-				'footer' => 'no',
+				'title' => '',
+				'footer' => '',
 				'type' => 'default',
-			), $atts )
-		);
+			), $atts );
 		
         $panel = (object) $panel;
 
 		// make sure the panel type is a valid styled type if not revert to default
-		$panel->type = in_array($type, $this->panel_types)? $panel->type: 'default';
+		$panel->type = in_array($panel->type, $this->panel_types)? $panel->type: 'default';
 
         // trim panel body content and process shortcodes
         $panel->content = trim( do_shortcode( $content ) );
 
 		//return shortcode output
         ob_start();
-        include dirname(__FILE__) . '/views/panel.php';
+        include plugin_dir_path( __DIR__ ) . 'templates/panel.php';
         return ob_get_clean();
 	}
 

@@ -1,0 +1,11 @@
+<script type="text/html" id="tmpl-tk_panel_shortcode">
+    <div class="panel panel-{{ data.type }}">
+        <# if ( data.title ) { #>
+        <div class="panel-heading"><h3 class="panel-title">{{ data.title }}</h3></div>
+        <# } #>
+        <div class="panel-body">{{ data.content }}</div>
+        <# if ( data.footer ) { #>
+        <div class="panel-footer">{{ data.footer }}</div>
+        <# } #>
+    </div>
+</script>

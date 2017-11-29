@@ -1,30 +1,28 @@
 <?php
 /**
- * iframe shortcode used in UoL theme
- *
- * @author Peter Edwards <p.l.edwards@leeds.ac.uk>
- * @version 1.2.1
- * @package UoL_theme
+ * iframe shortcode
  */
 
 /* sanity check */
-if ( ! class_exists( 'uol_shortcode_iframe' ) ) {
+if ( ! class_exists( 'tk_shortcode_iframe' ) ) {
 	/**
 	 * static class to handle iframe shortcode
 	 * includes de-registration of existing shortcode
 	 */
-	class uol_shortcode_iframe
+	class tk_shortcode_iframe
 	{
 		/**
 		 * register shortcode with Wordpress API */
-		public static function register()
+		public function __construct()
 		{
 			/* shortcode for iframes */
-			add_shortcode( 'iframe', array( __CLASS__, 'process_shortcode' ) );
+            if ( ! shortcode_exists( 'iframe' ) ) {
+    			add_shortcode( 'iframe', array( $this, 'process_shortcode' ) );
+            }
 
-			if ( method_exists( __CLASS__, 'embed_to_shortcode' ) ) {
+			if ( method_exists( $this, 'embed_to_shortcode' ) ) {
 				/* filter for translating embed codes directly in the editor to shortcode equivalents */
-				add_filter( 'pre_kses', array( __CLASS__, 'embed_to_shortcode') );
+				//add_filter( 'pre_kses', array( $this, 'embed_to_shortcode') );
 			}
 		}
 
@@ -32,32 +30,38 @@ if ( ! class_exists( 'uol_shortcode_iframe' ) ) {
 		 * method which provides the shortcode
 		 * called by register_shortcode()
 		 */
-		public static function process_shortcode( $args, $content = '')
+		public function process_shortcode( $args, $content = '')
 		{
 			extract(shortcode_atts(array(
 				'url'			=> '',
-				'src'			=> '',
+                'src'           => '',
+                'href'          => '',
 				'title'			=> '',
 				'scrolling'		=> 'no',
-				'width'			=> '100%',
-				'height'		=> '300',
+				'aspect'		=> '16by9',
 				'border'		=> 0,
 				'bordercolour'	=> '#fff',
 				'margin'		=> 0,
 				'style'			=> '',
 				'id'            => '',
-				'attr'			=> ''
+				'attr'			=> 'allowfullscreen'
 			), $args));
 			/* make sure there is a valid url */
-			if ( empty( $url ) && empty( $src ) ) {
-				return '<!-- Iframe: You did not enter a valid URL -->';
-			}
-			/* normalise URL variable */
-			if ( empty( $url ) ) {
-				$url = $src;
-			}
+			if ( empty( $url ) && empty( $src ) && empty( $href ) ) {
+				return '<!-- Iframe: You did not enter a URL -->';
+			} elseif ( empty( $url ) ) {
+                /* normalise URL variable */
+                if ( ! empty( $src ) ) {
+                    $url = $src;
+                } elseif ( ! empty( $href ) ) {
+                    $url = $href;
+                }
+            }
+            if ( false === filter_var( $url, FILTER_VALIDATE_URL ) ) {
+                return '<!-- Iframe: You did not enter a valid URL -->';
+            }
 			/* sanitise attributes and add style attributes for HTML5 */
-			$styles = 'position:relative;';
+			$styles = 'width:100%;height:100%;';
 			$attrs = '';
 			if (intval($border) > 0) {
 				$styles .= 'border:' . intval($border) . 'px solid ' . $bordercolour . ';';
@@ -107,15 +111,19 @@ if ( ! class_exists( 'uol_shortcode_iframe' ) ) {
 			if ( ! empty( $attr ) ) {
 				$attrs .= " " . trim($attr);
 			}
+            /* aspect ratio */
+            if ( empty( $aspect ) || ! in_array( $aspect, array('16by9', '4by3') ) ) {
+                $aspect = '16by9';
+            }
 			/* return iframe HTML */
-			return sprintf('<iframe src="%s" width="%s" height="%s" style="%s"%s>%s</iframe>', $url, $width, $height, $styles, $attrs, $content);
+			return sprintf('<div class="embed-responsive embed-responsive-%s"><iframe src="%s" style="%s"%s>%s</iframe></div>', $aspect, $url, $styles, $attrs, $content);
 
 		}
 
 		/**
 		 * filter placed on page/post content to turn any <iframe> tags into the shortcode equivalent
 		 */
-		public static function embed_to_shortcode( $content )
+		public function embed_to_shortcode( $content )
 		{
 			if ( false === strpos( $content, '<iframe' ) ) {
 				return $content;
@@ -128,7 +136,7 @@ if ( ! class_exists( 'uol_shortcode_iframe' ) ) {
 					$attributes = uol_shortcodes::parseAttributes($set[1]);
 					/* grab content */
 					$iframe_content = trim($set[2]);
-					/* these attributes bercome attributes for the shortcode */
+					/* these attributes become attributes for the shortcode */
 					$parsed_attr = array( 'src', 'title', 'scrolling', 'width', 'height', 'style', 'id' );
 					/* allowed extra attributes */
 					$allowed_extras = array('mozallowfullscreen', 'allowfullscreen', 'webkitallowfullscreen');
@@ -168,8 +176,7 @@ if ( ! class_exists( 'uol_shortcode_iframe' ) ) {
 		}
 	}
 
-	/* register when Wordpress has loaded */
-	add_action( 'wp_loaded', array( 'uol_shortcode_iframe', 'register' ) );
+    new tk_shortcode_iframe();
 
 /* end sanity check*/
 }

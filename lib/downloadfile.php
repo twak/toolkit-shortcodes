@@ -1,7 +1,8 @@
 <?php
 /**
- * Panel shortcode
+ * Download link shortcode
  * @see https://generatewp.com/take-shortcodes-ultimate-level/
+ * @see https://github.com/dtbaker/wordpress-mce-view-and-shortcode-editor
  */
 if ( ! class_exists( 'tk_downloadfile_shortcode' ) ) :
 
@@ -38,20 +39,23 @@ class tk_downloadfile_shortcode{
     public function shortcode_handler($atts , $content = null)
     {
         // Set default parameters
-        $downloadfile_atts = shortcode_atts( array (
+        $downloadfile = shortcode_atts( array (
             'url' => '',
             'type' => ''
         ), $atts );
 
+        $downloadfile = (object) $downloadfile;
+
         // sanitise
-        if ( ! $content || trim($content) == "" ) {
-            $content = "Download";
-        }
-        $type = strtolower(trim($downloadfile_atts["type"]));
+        $downloadfile->content = ( ! $content || trim($content) == "" ) ? "Download": $content;
+        $downloadfile->type = strtolower( trim( $downloadfile->type ) );
         $file_types = array('word', 'powerpoint', 'zip', 'pdf', 'excel');
-        $url = filter_var( $downloadfile_atts["url"], FILTER_VALIDATE_URL );
-        if ( $url && in_array( $type, $file_types ) ) {
-            return sprintf('<h4><a class="island island-sm island-m-b skin-box-module downloadlink type-%s" href="%s">%s</a></h4>', $type, $url, $content );
+        $downloadfile->url = filter_var( $downloadfile->url, FILTER_VALIDATE_URL );
+        if ( $downloadfile->url && in_array( $downloadfile->type, $file_types ) ) {
+            //return shortcode output
+            ob_start();
+            include plugin_dir_path( __DIR__ ) . 'templates/downloadfile.php';
+            return ob_get_clean();
         }
     }
 

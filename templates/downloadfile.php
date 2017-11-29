@@ -1,0 +1,1 @@
+<h4><a class="island island-sm island-m-b skin-box-module downloadlink type-<?php echo $downloadfile->type; ?>" href="<?php echo $downloadfile->url; ?>"><?php echo $downloadfile->content; ?></a></h4>
