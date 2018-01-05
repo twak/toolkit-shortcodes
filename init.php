@@ -24,7 +24,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             include dirname(__FILE__) . '/lib/panel.php';
 
             // button shortcode
-            add_shortcode( 'button', array( $this, 'button_shortcode' ) );
+            include dirname(__FILE__) . '/lib/button.php';
 
             // download file button
             include dirname(__FILE__) . '/lib/downloadfile.php';
@@ -47,38 +47,6 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
             add_filter( 'mce_css', array($this , 'editor_styles' ) );
 
-        }
-
-        /*
-        * BUTTON SHORTCODE [button link="" text="" type=""]
-        */
-        public static function button_shortcode( $atts )
-        {
-
-            // Set default parameters
-            $button_atts = shortcode_atts( array (
-                'link' => '',
-                'text' => 'Button text',
-                'type' => ''
-            ), $atts );
-
-            // Button types
-            if( $button_atts['type'] == '' ) {
-                $button_type = 'btn-primary';
-            } else if( $button_atts['type'] == 'success' ) {
-                $button_type = 'btn-success';
-            } else if( $button_atts['type'] == 'info' ) {
-                $button_type = 'btn-info';
-            } else if( $button_atts['type'] == 'warning' ) {
-                $button_type = 'btn-warning';
-            } else if( $button_atts['type'] == 'danger' ) {
-                $button_type = 'btn-danger';
-            } else if( $button_atts['type'] == 'purple' ) {
-                $button_type = 'btn-purple';
-            }
-
-            // Return the button
-            return '<a href="' . wp_kses_post( $button_atts['link'] ) . '" class="btn btn-lg ' . $button_type . '">' . wp_kses_post( $button_atts['text'] ) . '</a>';
         }
 
         /**
