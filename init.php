@@ -74,7 +74,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             }
 
             // Return the panel markup
-            return '<div class="panel panel-default">' . $title . '<div class="panel-body">' . do_shortcode( $content ) . '</div></div>';
+            return '<div class="panel panel-default">' . $title . '<div class="panel-body">' . $content . '</div></div>';
         }
 
         /*
