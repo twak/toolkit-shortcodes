@@ -20,11 +20,17 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
         /* register all shortcodes with wordpress API */
         public function __construct()
         {
-            // panel shortcode
+            // panel shortcode (Tiny MCE style)
             include dirname(__FILE__) . '/lib/panel.php';
 
-            // button shortcode
+            // panel shortcode (shortcode style)
+            add_shortcode( 'panel', array( __CLASS__, 'panel_shortcode' ) );
+
+            // button shortcode (TinyMCE style)
             include dirname(__FILE__) . '/lib/button.php';
+
+            // button shortcode (shortcode style)
+            add_shortcode( 'button', array( __CLASS__, 'button_shortcode' ) );
 
             // download file button
             include dirname(__FILE__) . '/lib/downloadfile.php';
@@ -47,6 +53,60 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
             add_filter( 'mce_css', array($this , 'editor_styles' ) );
 
+        }
+
+        /*
+         * PANEL SHORTCODE [panel title=""]Blah Blah[/panel]
+         */
+        public static function panel_shortcode( $atts, $content = null ) {
+
+            // Set default parameters
+            $panel_atts = shortcode_atts( array (
+                'title' => ''
+            ), $atts );
+
+            // If title is empty, don't use it in the panel
+            if( $panel_atts['title'] == '') {
+                $title = '';
+                // Otherwise, add the panel!
+            } else {
+                $title = '<div class="panel-heading"><h3 class="panel-title">' . wp_kses_post( $panel_atts['title'] ) . '</h3></div>';
+            }
+
+            // Return the panel markup
+            return '<div class="panel panel-default">' . $title . '<div class="panel-body">' . do_shortcode( $content ) . '</div></div>';
+        }
+
+        /*
+        * BUTTON SHORTCODE [button link="" text="" type=""]
+        */
+        public static function button_shortcode( $atts )
+        {
+
+            // Set default parameters
+            $button_atts = shortcode_atts( array (
+                'link' => '',
+                'text' => 'Button text',
+                'type' => ''
+            ), $atts );
+
+            // Button types
+            if( $button_atts['type'] == '' ) {
+                $button_type = 'btn-primary';
+            } else if( $button_atts['type'] == 'success' ) {
+                $button_type = 'btn-success';
+            } else if( $button_atts['type'] == 'info' ) {
+                $button_type = 'btn-info';
+            } else if( $button_atts['type'] == 'warning' ) {
+                $button_type = 'btn-warning';
+            } else if( $button_atts['type'] == 'danger' ) {
+                $button_type = 'btn-danger';
+            } else if( $button_atts['type'] == 'purple' ) {
+                $button_type = 'btn-purple';
+            }
+
+            // Return the button
+            return '<a href="' . wp_kses_post( $button_atts['link'] ) . '" class="btn btn-lg ' . $button_type . '">' . wp_kses_post( $button_atts['text'] ) . '</a>';
         }
 
         /**

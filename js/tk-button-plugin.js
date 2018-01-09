@@ -82,7 +82,7 @@
                         type: 'checkbox',
                         name: 'block',
                         label: 'Make the button a block? (100% width)',
-                        checked: values.block
+                        checked: (values.block.toLowerCase() == 'false'? false: true) 
                     },
                 ],
                 onsubmit: onsubmit_callback
