@@ -4,7 +4,7 @@
  * Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Bitbucket Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
  * Description: Shortcodes for components in the UoL WordPress Toolkit theme.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Web Team
  * Author URI: https://bitbucket.org/university-of-leeds/
  * License: GPL2
@@ -15,16 +15,22 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
     class tk_shortcodes
     {
         /* plugin version */
-        public static $version = "1.0.4";
+        public static $version = "1.0.5";
 
         /* register all shortcodes with wordpress API */
         public function __construct()
         {
-            // panel shortcode
+            // panel shortcode (Tiny MCE style)
             include dirname(__FILE__) . '/lib/panel.php';
 
-            // button shortcode
-            add_shortcode( 'button', array( $this, 'button_shortcode' ) );
+            // panel shortcode (shortcode style)
+            add_shortcode( 'panel', array( __CLASS__, 'panel_shortcode' ) );
+
+            // button shortcode (TinyMCE style)
+            include dirname(__FILE__) . '/lib/button.php';
+
+            // button shortcode (shortcode style)
+            add_shortcode( 'button', array( __CLASS__, 'button_shortcode' ) );
 
             // download file button
             include dirname(__FILE__) . '/lib/downloadfile.php';
@@ -47,6 +53,28 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             add_action( 'admin_enqueue_scripts', array($this , 'admin_script' ) );
             add_filter( 'mce_css', array($this , 'editor_styles' ) );
 
+        }
+
+        /*
+         * PANEL SHORTCODE [panel title=""]Blah Blah[/panel]
+         */
+        public static function panel_shortcode( $atts, $content = null ) {
+
+            // Set default parameters
+            $panel_atts = shortcode_atts( array (
+                'title' => ''
+            ), $atts );
+
+            // If title is empty, don't use it in the panel
+            if( $panel_atts['title'] == '') {
+                $title = '';
+                // Otherwise, add the panel!
+            } else {
+                $title = '<div class="panel-heading"><h3 class="panel-title">' . wp_kses_post( $panel_atts['title'] ) . '</h3></div>';
+            }
+
+            // Return the panel markup
+            return '<div class="panel panel-default">' . $title . '<div class="panel-body">' . do_shortcode( $content ) . '</div></div>';
         }
 
         /*

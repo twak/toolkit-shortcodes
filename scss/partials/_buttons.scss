@@ -1,8 +1,26 @@
-.btn-purple {
+a.btn-default {
+    color:#333 !important;
+}
+a.btn-default:hover {
+    color:#000 !important;
+}
+a.btn-info,
+a.btn-primary,
+a.btn-success,
+a.btn-warning,
+a.btn-danger,
+a.btn-purple {
+    color:#fff !important;
+    &:hover {
+        color:#fff !important;
+    }
+}
+a.btn-purple {
     background-color: #6b3f88;
-    color: #fff !important;
+    border-color: #6b3f88;
+    &:hover {
+        background-color: #794799;
+        border-color: #794799;
+    }
 }
-.btn-purple:hover {
-    background-color: #794799;
-    color: #fff !important;
-}
+

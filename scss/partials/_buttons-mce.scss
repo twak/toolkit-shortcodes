@@ -1,0 +1,66 @@
+a.btn {
+    padding: 8px 12px;
+    text-decoration:none;
+    text-transform:uppercase;
+    text-align:center;
+    vertical-align:middle;
+    display:inline-block;
+    border:1px solid transparent;
+    cursor:pointer;
+}
+a.btn-default {
+    background-color: #eee;
+    border-color: #ccc;
+    &:hover {
+        background-color: #d5d5d5;
+        border-color: #adadad;
+    }
+}
+a.btn-info {
+    background-color: #79b9db;
+    border-color: #65afd6;
+    &:hover {
+        background-color: #51a4d0;
+        border-color: #3695c8;
+    }
+}
+a.btn-primary {
+    background-color: #212122;
+    border-color: #111000;
+    &:hover {
+        background-color: #333;
+        border-color: #000;
+    }
+}
+a.btn-success {
+    background-color: #86b26e;
+    border-color: #78a95d;
+    &:hover {
+        background-color: #6c9b52;
+        border-color: #5c8346;
+    }
+}
+a.btn-warning {
+    background-color: #f0ad65;
+    border-color: #eea14e;
+    &:hover {
+        background-color: #eb9437;
+        border-color: #e88317;
+    }
+}
+a.btn-danger {
+    background-color: #bc393b;
+    border-color: #a83335;
+    &:hover {
+        background-color: #952d2f;
+        border-color: #792526;
+    }
+}
+a.btn-block {
+    display:block;
+}
+div[data-wpview-text*="block%3D%22false"] {
+    display:inline-block;
+    box-sizing:border-box;
+    width: auto;
+}
