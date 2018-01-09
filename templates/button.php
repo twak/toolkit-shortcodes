@@ -1,0 +1,1 @@
+<a class="btn btn-lg btn-<?php echo $button->type; ?><?php if ( $button->block ) : ?> btn-block<?php endif; ?>" href="<?php echo $button->link; ?>"><?php echo $button->title; ?></a>
