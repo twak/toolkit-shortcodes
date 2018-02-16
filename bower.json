@@ -1,6 +1,6 @@
 {
   "name": "toolkit-shortcodes",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "Shortcodes for components in the UoL WordPress Toolkit theme",
   "license": "GPL-2.0",
   "devDependencies": {
