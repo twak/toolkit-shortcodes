@@ -49,7 +49,7 @@
                 };
             }
             editor.windowManager.open( {
-                title: 'Panel Shortcode',
+                title: 'Panel',
                 body: [
                     {
                         type: 'textbox',

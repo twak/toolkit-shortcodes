@@ -46,7 +46,7 @@
                 };
             }
             editor.windowManager.open( {
-                title: 'Button Shortcode',
+                title: 'Button',
                 body: [
                     {
                         type: 'textbox',

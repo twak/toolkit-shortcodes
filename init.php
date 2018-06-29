@@ -1,12 +1,12 @@
 <?php
 /**
  * Plugin Name: Toolkit Shortcodes
- * Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
- * Bitbucket Plugin URI: https://bitbucket.org/university-of-leeds/toolkit-shortcodes
+ * Plugin URI: https://github.com/universityofleeds/toolkit-shortcodes
+ * GitHub Plugin URI: https://github.com/universityofleeds/toolkit-shortcodes
  * Description: Shortcodes for components in the UoL WordPress Toolkit theme.
- * Version: 1.0.6
- * Author: Web Team
- * Author URI: https://bitbucket.org/university-of-leeds/
+ * Version: 1.0.7
+ * Author: Application Development, University of Leeds
+ * Author URI: https://github.com/universityofleeds
  * License: GPL2
  */
 
@@ -15,7 +15,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
     class tk_shortcodes
     {
         /* plugin version */
-        public static $version = "1.0.6";
+        public static $version = "1.0.7";
 
         /* register all shortcodes with wordpress API */
         public function __construct()
@@ -293,7 +293,7 @@ if ( ! class_exists( 'tk_shortcodes' ) ) {
             // check if WYSIWYG is enabled
             if ( 'true' == get_user_option( 'rich_editing' ) ) {
                 add_filter( 'mce_external_plugins', array( $this ,'mce_plugins' ), 100 );
-                add_filter( 'mce_buttons_2', array($this, 'mce_buttons' ), 100 );
+                add_filter( 'mce_buttons', array($this, 'mce_buttons' ), 100 );
             }
         }
 
