@@ -48,7 +48,7 @@
                 };
             }
             editor.windowManager.open( {
-                title: 'Panel Shortcode',
+                title: 'File Download button',
                 body: [
                     {
                         type: 'textbox',
@@ -87,6 +87,7 @@
     tinymce.PluginManager.add( shortcode_string, function( editor ) {
         editor.addButton( shortcode_string, {
             tooltip: 'File Download',
+            text: 'File',
             icon: 'downloadfile',
             onclick: function() {
                 wp.mce.downloadfile.popupwindow(editor);
