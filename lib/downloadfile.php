@@ -49,7 +49,7 @@ class tk_downloadfile_shortcode{
         // sanitise
         $downloadfile->content = ( ! $content || trim($content) == "" ) ? "Download": $content;
         $downloadfile->type = strtolower( trim( $downloadfile->type ) );
-        $file_types = array('word', 'powerpoint', 'zip', 'pdf', 'excel');
+        $file_types = array('word', 'powerpoint', 'zip', 'pdf', 'excel', 'github');
         $downloadfile->url = filter_var( $downloadfile->url, FILTER_VALIDATE_URL );
         if ( $downloadfile->url && in_array( $downloadfile->type, $file_types ) ) {
             //return shortcode output

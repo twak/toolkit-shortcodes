@@ -67,7 +67,8 @@
                             {text: 'Word document', value: 'word'},
                             {text: 'Powerpoint presentation', value: 'powerpoint'},
                             {text: 'Excel Spreadsheet', value: 'excel'},
-                            {text: 'Zip archive', value: 'zip'}
+                            {text: 'Zip archive', value: 'zip'},
+                            {text: 'Source Code', value: 'github'}
                         ],
                         tooltip: 'Select the type of file'
                     },
